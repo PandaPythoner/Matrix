@@ -10,6 +10,10 @@ private:
     std::vector<std::vector<T>> a;
 public:
 
+    inline std::pair<int, int> shape(){
+        return std::make_pair(n, m);
+    }
+
     matrix() : n(0), m(0) {
         a.clear();
     }
@@ -51,6 +55,9 @@ public:
     template<class Type> friend matrix<Type> operator*(const matrix<Type>&, const matrix<Type>&);
     template<class Type> friend matrix<Type> transpose(const matrix<Type>&);
     template<class Type> friend matrix<Type> pow(const matrix<Type>&, Type);
+
+    template<class Type> friend std::ostream& operator<<(std::ostream&, const matrix<Type>&);
+    template<class Type> friend std::istream& operator>>(std::istream&, matrix<Type>&);
 };
 
 
@@ -77,7 +84,7 @@ matrix<T> operator*(const matrix<T> &a, T x){
     matrix<T> res(n, m);
     for(int i = 0; i < n; ++i){
         for(int j = 0; j < m; ++j){
-            res[i][j] = a[i][j] * T;
+            res[i][j] = a[i][j] * x;
         }
     }
     return res;
@@ -130,6 +137,33 @@ matrix<T> pow(const matrix<T> &x, T n){
         a = a * x;
     }
     return a;
+}
+
+template<class T>
+std::ostream& operator<<(std::ostream& out, const matrix<T>& a){
+    int n = a.n;
+    int m = a.m;
+    for(int i = 0; i < n; ++i){
+        for(int j = 0; j < m; ++j){
+            out << a[i][j] << " ";
+        }
+        out << "\n";
+    }
+    return out;
+}
+
+
+template<class T>
+std::istream& operator>>(std::istream& in, matrix<T>& a){
+    int n, m;
+    in >> n >> m;
+    a = matrix<T>(n, m);
+    for(int i = 0; i < n; ++i) {
+        for (int j = 0; j < m; ++j) {
+            in >> a[i][j];
+        }
+    }
+    return in;
 }
 
 #endif //MATRIX_MATRIX_H
