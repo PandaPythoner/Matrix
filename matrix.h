@@ -70,4 +70,66 @@ matrix<T> operator+(const matrix<T> &a, const matrix<T> &b){
     return res;
 }
 
+template<class T>
+matrix<T> operator*(const matrix<T> &a, T x){
+    int n = a.n;
+    int m = a.m;
+    matrix<T> res(n, m);
+    for(int i = 0; i < n; ++i){
+        for(int j = 0; j < m; ++j){
+            res[i][j] = a[i][j] * T;
+        }
+    }
+    return res;
+}
+
+template<class T>
+matrix<T> operator*(const matrix<T> &a, const matrix<T> &b){
+    int n = a.n;
+    int k = a.m;
+    int m = b.m;
+    if(b.n != k){
+        throw "Matrices have bad sizes for multiplication";
+    }
+    matrix<T> res(n, m);
+    for(int i = 0; i < n; ++i){
+        for(int j = 0; j < m; ++j){
+            res[i][j] = 0;
+            for(int x = 0; x < k; ++x){
+                res[i][j] += a[i][x] * b[x][j];
+            }
+        }
+    }
+    return res;
+}
+
+template<class T>
+matrix<T> transpose(const matrix<T> &a){
+    int n = a.n;
+    int m = a.m;
+    matrix<T> res(m, n);
+    for(int i = 0; i < n; ++i){
+        for(int j = 0; j < m; ++j){
+            res[j][i] = a[i][j];
+        }
+    }
+    return res;
+}
+
+template<class T>
+matrix<T> pow(const matrix<T> &x, T n){
+    if(n == 1){
+        return x;
+    }
+    if(x.n != x.m){
+        throw "Can't raise a non-square matrix to a power";
+    }
+    matrix<T> a = pow(x, n / 2);
+    a = a * a;
+    if(n & 1){
+        a = a * x;
+    }
+    return a;
+}
+
 #endif //MATRIX_MATRIX_H
