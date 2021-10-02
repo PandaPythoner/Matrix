@@ -2,6 +2,7 @@
 #define MATRIX_MATRIX_H
 
 #include <vector>
+#include <algorithm>
 
 template<class T>
 class matrix{
@@ -58,7 +59,38 @@ public:
 
     template<class Type> friend std::ostream& operator<<(std::ostream&, const matrix<Type>&);
     template<class Type> friend std::istream& operator>>(std::istream&, matrix<Type>&);
+
+    T determinant();
 };
+
+template<class T>
+T matrix<T>::determinant(){
+    if(n != m){
+        throw "Can't find determinant for a non-square matrix";
+    }
+    std::vector<int> p(n);
+    for(int i = 0; i < n; ++i){
+        p[i] = i;
+    }
+    T res = 0;
+    while(true){
+        int d = 1;
+        T x = 1;
+        for(int i = 0; i < n; ++i){
+            for(int j = i + 1; j < n; ++j){
+                if(p[i] > p[j]){
+                    x *= -1;
+                }
+            }
+            d *= a[i][p[i]];
+        }
+        res += d * x;
+        if(!std::next_permutation(p.begin(), p.end())){
+            break;
+        }
+    }
+    return res;
+}
 
 
 template<class T>

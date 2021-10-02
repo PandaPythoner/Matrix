@@ -11,6 +11,7 @@ int main() {
         long long x, y;
         cout << "Type first matrix (a):\n";
         cin >> a;
+        cout << "determinant(a) = " << a.determinant() << "\n";
         cout << "Type second matrix (b):\n";
         cin >> b;
         cout << "Type number for multiplication (x):";
@@ -35,3 +36,9 @@ int main() {
     }
     return 0;
 }
+
+/*
+5 3 9
+8 2 1
+3 4 2
+*/
