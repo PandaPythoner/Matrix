@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <algorithm>
+#include <queue>
 
 template<class T>
 class matrix{
@@ -61,6 +62,7 @@ public:
     template<class Type> friend std::istream& operator>>(std::istream&, matrix<Type>&);
 
     T determinant();
+    T determinant_fast();
 };
 
 template<class T>
@@ -90,6 +92,34 @@ T matrix<T>::determinant(){
         }
     }
     return res;
+}
+
+
+template<class T>
+T matrix<T>::determinant_fast(){
+    if(n != m){
+        throw "Can't find determinant for a non-square matrix";
+    }
+    std::vector<T> x(1 << n, 0);
+    x[0] = 1;
+    for(int msk = 0; msk < (1 << n) - 1; ++msk){
+        int o = 1;
+        int c = 0;
+        for(int i = 0; i < n; ++i){
+            if((msk >> i) & 1){
+                ++c;
+            }
+        }
+        for(int i = n - 1; i >= 0; --i){
+            if((msk >> i) & 1){
+                o *= -1;
+            }
+            else{
+                x[msk + (1 << i)] += x[msk] * o * a[c][i];
+            }
+        }
+    }
+    return x[(1 << n) - 1];
 }
 
 

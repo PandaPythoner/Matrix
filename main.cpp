@@ -12,6 +12,7 @@ int main() {
         cout << "Type first matrix (a):\n";
         cin >> a;
         cout << "determinant(a) = " << a.determinant() << "\n";
+        cout << "determinant_fast(a) = " << a.determinant_fast() << "\n";
         cout << "Type second matrix (b):\n";
         cin >> b;
         cout << "Type number for multiplication (x):";
@@ -38,7 +39,10 @@ int main() {
 }
 
 /*
-5 3 9
-8 2 1
-3 4 2
+5 5
+1 0 3 0 2
+8 5 2 0 1
+7 3 9 6 1
+9 7 0 1 2
+0 9 8 2 1
 */
