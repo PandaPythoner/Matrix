@@ -7,12 +7,14 @@ using namespace std;
 
 int main() {
     try {
-        matrix<long long> a, b;
-        long long x, y;
+        matrix<double> a, b;
+        double x;
+        long long y;
         cout << "Type first matrix (a):\n";
         cin >> a;
-        cout << "determinant(a) = " << a.determinant() << "\n";
-        cout << "determinant_fast(a) = " << a.determinant_fast() << "\n";
+        auto inva = a.inverted();
+        cout << "inverted(a) = \n" << inva << "\n\n";
+        cout << "inv() * a = \n" << inva * a << "\n\n";
         cout << "Type second matrix (b):\n";
         cin >> b;
         cout << "Type number for multiplication (x):";

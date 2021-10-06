@@ -20,8 +20,8 @@ public:
         a.clear();
     }
 
-    matrix(int n, int m) : n(n), m(m) {
-        a.assign(n, std::vector<T>(m));
+    matrix(int n, int m, T x = 0) : n(n), m(m) {
+        a.assign(n, std::vector<T>(m, x));
     }
 
     matrix(const std::vector<std::vector<T>> &b){
@@ -56,14 +56,96 @@ public:
     template<class Type> friend matrix<Type> operator*(const matrix<Type>&, Type);
     template<class Type> friend matrix<Type> operator*(const matrix<Type>&, const matrix<Type>&);
     template<class Type> friend matrix<Type> transpose(const matrix<Type>&);
-    template<class Type> friend matrix<Type> pow(const matrix<Type>&, Type);
+    template<class Type> friend matrix<Type> pow(const matrix<Type>&, long long);
 
     template<class Type> friend std::ostream& operator<<(std::ostream&, const matrix<Type>&);
     template<class Type> friend std::istream& operator>>(std::istream&, matrix<Type>&);
 
     T determinant();
     T determinant_fast();
+
+    bool gauss();
+    void add_to_line(int, int, T);
+    void mul_line(int, T);
+
+    matrix<T> inverted();
 };
+
+
+template<class T>
+void matrix<T>::add_to_line(int from, int to, T alph){
+    for(int i = 0; i < m; ++i){
+        a[to][i] += a[from][i] * alph;
+    }
+}
+
+
+template<class T>
+void matrix<T>::mul_line(int i, T alph){
+    for(int j = 0; j < m; ++j){
+        a[i][j] *= alph;
+    }
+}
+
+
+template<class T>
+bool matrix<T>::gauss(){
+    int s = std::min(n, m);
+    for(int i = 0; i < s; ++i){
+        int x = -1;
+        for(int j = i; j < s; ++j){
+            if(x == -1 && a[j][i] != 0){
+                x = j;
+            }
+        }
+        if(x == -1){
+            return false;
+        }
+        a[i].swap(a[x]);
+        mul_line(i, 1 / a[i][i]);
+        for(int j = i + 1; j < s; ++j){
+            if(a[j][i] != 0){
+                add_to_line(i, j, - a[j][i]);
+            }
+        }
+    }
+    for(int i = s - 1; i >= 0; --i){
+        for(int j = i - 1; j >= 0; --j){
+            if(a[j][i] != 0){
+                add_to_line(i, j, - a[j][i]);
+            }
+        }
+    }
+    return true;
+}
+
+
+template<class T>
+matrix<T> matrix<T>::inverted(){
+    if(n != m){
+        throw "Can't find inverted matrix for a non-square matrix";
+    }
+    matrix<T> x(n, n + n);
+    for(int i = 0; i < n; ++i){
+        for(int j = 0; j < n; ++j){
+            x[i][j] = a[i][j];
+        }
+    }
+    for(int i = 0; i < n; ++i){
+        x[i][i + n] = 1;
+    }
+    if(!x.gauss()){
+        throw "This matrix can't be inverted";
+    }
+    matrix<T> res(n, n);
+    for(int i = 0; i < n; ++i){
+        for(int j = 0; j < n; ++j){
+            res[i][j] = x[i][j + n];
+        }
+    }
+    return res;
+}
+
 
 template<class T>
 T matrix<T>::determinant(){
@@ -186,7 +268,7 @@ matrix<T> transpose(const matrix<T> &a){
 }
 
 template<class T>
-matrix<T> pow(const matrix<T> &x, T n){
+matrix<T> pow(const matrix<T> &x, long long n){
     if(n == 1){
         return x;
     }
