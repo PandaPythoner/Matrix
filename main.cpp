@@ -7,6 +7,22 @@ using namespace std;
 
 int main() {
     try {
+        int n;
+        cout << "Type linear system size:";
+        cin >> n;
+        vector<vector<double>> va(n, vector<double>(n));
+        vector<double> vb(n);
+        for(int i = 0; i < n; ++i){
+            for(int j = 0; j < n; ++j){
+                cin >> va[i][j];
+            }
+            cin >> vb[i];
+        }
+        auto res = solve_linear_system(va, vb);
+        for(int i = 0; i < n; ++i){
+            cout << res[i] << " ";
+        }
+        cout << "\n";
         matrix<double> a, b;
         double x;
         long long y;

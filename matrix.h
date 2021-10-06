@@ -44,6 +44,16 @@ public:
         }
     }
 
+    matrix(const std::vector<T> &b){
+        a.clear();
+        n = 1;
+        m = b.size();
+        a.assign(n, std::vector<T>(m));
+        for (int j = 0; j < m; ++j) {
+            a[0][j] = b[j];
+        }
+    }
+
     std::vector<T>& operator[](int i){
         return a[i];
     }
@@ -309,5 +319,16 @@ std::istream& operator>>(std::istream& in, matrix<T>& a){
     }
     return in;
 }
+
+template<class T>
+matrix<T> solve_linear_system(const matrix<T> &x, const matrix<T> &y){
+    return x.inverted() * y;
+}
+
+template<class T>
+std::vector<T> solve_linear_system(const std::vector<std::vector<T>> &x, const std::vector<T> &y){
+    return transpose(matrix<T>(x).inverted() * transpose(matrix<T>(y)))[0];
+}
+
 
 #endif //MATRIX_MATRIX_H
