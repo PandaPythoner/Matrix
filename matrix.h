@@ -331,4 +331,52 @@ std::vector<T> solve_linear_system(const std::vector<std::vector<T>> &x, const s
 }
 
 
+template<class T>
+std::pair<bool, std::vector<std::pair<bool, T>>> solve_linear_system_rect(const std::vector<std::vector<T>> &x, const std::vector<T> &y){
+    int n = x.size();
+    int m = x[0].size();
+    matrix<T> a(n, m + 1);
+    for(int i = 0; i < n; ++i){
+        for(int j = 0; j < m; ++j){
+            a[i][j] = x[i][j];
+        }
+        a[i][m] = y[i];
+    }
+    int s = 0;
+    int c = 0;
+    std::vector<int> f;
+    f.reserve(n);
+    for(; c < m && s < n; ++c){
+        int x = -1;
+        for(int j = s; j < n; ++j){
+            if(x == -1 && a[j][c] != 0){
+                x = j;
+            }
+        }
+        if(x == -1){
+            continue;
+        }
+        a[s].swap(a[x]);
+        a.mul_line(c, 1 / a[s][c]);
+        f.push_back(c);
+        for(int j = 0; j < n; ++j){
+            if(j != s && a[j][c] != 0){
+                a.add_to_line(s, j, - a[j][c]);
+            }
+        }
+        ++s;
+    }
+    std::vector<std::pair<bool, T>> res(m, std::make_pair(false, 0));
+    for(int i = s; i < n; ++i){
+        if(a[i][m] != 0){
+            return std::make_pair(false, res);
+        }
+    }
+    for(int i = 0; i < s; ++i){
+        res[f[i]] = std::make_pair(true, a[i][m]);
+    }
+    return make_pair(true, res);
+}
+
+
 #endif //MATRIX_MATRIX_H
